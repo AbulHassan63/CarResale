@@ -1,0 +1,172 @@
+﻿@model CarResale.Models.Dashboardview
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Dashboard</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap-grid.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var items = "<option value='0'>Select</option>";
+            $("#Brand_id").html(items);
+            $("#Model_id").html(items);
+            $('#Man_id').val('0');
+            //bind brand
+                $('#Man_id').change(function () {
+                    var url = '@Url.Content("~/")' + "Master/GetBrand";
+                    var ddlman = "#Man_id";
+                    $.getJSON(url, { Man_id: $(ddlman).val() }, function (data) {
+                        var items = '';
+                        $("#Brand_id").empty();
+                        $("#Model_id").empty();
+                        var itemst = "<option value='0'>Select</option>"
+                        $("#Brand_id").html(itemst)
+                        $("#Model_id").html(itemst)
+                        $.each(data, function (i, Brand) {
+                            items += "<option value='" + Brand.value + "'>" + Brand.text + "</option>";
+                        });
+                        $("#Brand_id").html(items)
+                    });
+                });
+            //bind model
+                $('#Brand_id').change(function () {
+                    var url = '@Url.Content("~/")' + "Master/GetModel";
+                    var ddlbrand = "#Brand_id";
+                    $.getJSON(url, { Brand_id: $(ddlbrand).val() }, function (data) {
+                        var items = '';
+                        $("#Model_id").empty();
+                        $.each(data, function (i, Model) {
+                            items += "<option value='" + Model.value + "'>" + Model.text + "</option>";
+                        });
+                        $("#Model_id").html(items)
+                    });
+                });
+      
+
+        });
+    </script>
+</head>
+<body>
+    <form asp-controller="Master" asp-action="Dashboard" method="post">
+        <div class="container">
+            <div class="row">
+                <br />
+                <div class="col-md-8 text-center" style="margin-top:20px;" >
+                    <h3>Registered Cars</h3>
+                </div>
+                <div class="col-md-4 float-right" style="margin-top:20px;"  >                   
+                    <a asp-action="CarRegister" ><button class="btn btn-primary" type="button">New Register</button></a>
+                </div>
+
+                <div class="col-md-12">
+                    <hr />
+                </div>
+               
+                <div class="offset-md-2 col-md-8">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="Man_id" class="control-label">Make</label>
+                                <select asp-for="Man_id" class="form-control" asp-items="@(new SelectList(Model.CarManinfo,"Man_id","Man_name"))"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="Brand_id" class="control-label">Brand</label>
+                                <select asp-for="Brand_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Model_id" class="control-label">Model</label>
+                            <select asp-for="Model_id" class="form-control"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <button type="submit" class="btn btn-success">Search</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12">
+                    <table class="table table-bordered table-hover table-responsive-md">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">
+                                    Req ID
+                                </th>
+                                <th scope="col">
+                                    Make
+                                </th>
+                                <th scope="col">
+                                    Brand
+                                </th>
+                                <th scope="col">
+                                    Model
+                                </th>
+                                <th scope="col">
+                                    YearBuild
+                                </th>
+                                <th scope="col">
+                                    Kilometer Coverd
+                                </th>
+                                <th scope="col">
+                                    Car Picture
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var items in Model.DashCarRegister)
+                            {
+                                <tr>
+                                    <td scope="row">
+                                        @items.Reg_id
+                                    </td>
+                                    <td>
+                                        @items.Man_name
+                                    </td>
+                                    <td>
+                                        @items.Brand_name
+                                    </td>
+                                    <td>
+                                        @items.Model_name
+                                    </td>
+                                    <td>
+                                        @items.YearBuild
+                                    </td>
+                                    <td>
+                                        @items.Kilometer_Coverd
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(items.CarImage))
+                                        {
+                                            @*<img src="@items.CarImage" alt="@items.Model_name" width="100" height="100" />*@
+                                            <img src="@items.CarImage" alt="@items.Model_name" width="100" height="100" />
+
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/defaultcar.jpg" alt="@items.Model_name" width="100" height="100" />
+                                        }
+
+                                        
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

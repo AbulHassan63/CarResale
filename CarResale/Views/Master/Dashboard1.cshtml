@@ -1,0 +1,102 @@
+﻿@model CarResale.Models.Dashboardview
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Dashboard1</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap-grid.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/Custom.js"></script>
+</head>
+<body>
+    <form asp-controller="Master" asp-action="Dashboard1" method="post">
+        <div class="container">
+            <div class="row">
+                <br />
+                <div class="col-md-8 text-center" style="margin-top:20px;">
+                    <h3>Registered Cars</h3>
+                </div>
+                <div class="col-md-4 float-right" style="margin-top:20px;">
+                    <a asp-action="CarRegister"><button class="btn btn-primary" type="button">New Register</button></a>
+                </div>
+
+                <div class="col-md-12">
+                    <hr />
+                </div>
+
+                <div class="offset-md-2 col-md-8">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="Man_id" class="control-label">Make</label>
+                                <select asp-for="Man_id" class="form-control" asp-items="@(new SelectList(Model.CarManinfo,"Man_id","Man_name"))"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="Brand_id" class="control-label">Brand</label>
+                                <select asp-for="Brand_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Model_id" class="control-label">Model</label>
+                            <select asp-for="Model_id" class="form-control"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <br />
+                            <button type="submit" class="btn btn-success">Search</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <hr />
+                    </div>
+                    <div class="row">
+
+                        @foreach (var items in Model.DashCarRegister)
+                        {
+
+                            <div class="col-md-4">
+                                <div class="card shadow p-3 mb-5 bg-white rounded" style="width: 18rem;">
+                                    @if (!string.IsNullOrEmpty(items.CarImage))
+                                    {
+                                        <img class="card-img" src="@items.CarImage" alt="@items.Model_name" width="200" height="130"  />
+
+                                    }
+                                    else
+                                    {
+                                        <img  src="~/images/defaultcar.jpg" alt="@items.Model_name" width="200" height="130" />
+                                    }
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary"> @items.Man_name</h5>
+                                        @*<p class="card-text">  @items.Reg_id</p>*@
+                                        <p class="card-text"> <span>Brand :</span> @items.Brand_name</p>
+                                        <p class="card-text"><span>Model :</span> @items.Model_name</p>
+                                        <p class="card-text"><span>Year Build :</span> @items.YearBuild</p>
+                                        <a href="#" class="text-info"><span>Kilometers Covered</span> @items.Kilometer_Coverd</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
